@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "npm run dev -w @dday/client",
+    "start": "npm run start -w @dday/server",
     "build": "npm run build -w @dday/client",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/node": "^22.20.5",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.1.1",

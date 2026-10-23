@@ -5,9 +5,13 @@
   "type": "module",
   "description": "Game server for D-Day (1961): links, dice, hidden information, persistence",
   "scripts": {
+    "start": "tsx src/main.ts",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@dday/engine": "*"
+    "@dday/engine": "*",
+    "@fastify/static": "^10.1.7",
+    "fastify": "^5.12.7",
+    "tsx": "^4.23.15"
   }
 }
