@@ -10,7 +10,7 @@ The game runs on Karl's DigitalOcean droplet, which is managed by Laravel Forge 
 | App port     | `127.0.0.1:3061` (not reachable from outside; nginx proxies to it) |
 | Health check | `https://ddaygame.dev/api/health`                                  |
 
-In the steps below, `<site-dir>` is the site's directory as Forge shows it (for example `/home/forge/ddaygame.dev`). Forge's menu names may differ slightly from those given here.
+In the steps below, `<site-dir>` is the site's directory as Forge shows it (currently `/home/forge/ddaygame.dev`). Forge's menu names may differ slightly from those given here.
 
 ## One-time setup
 
@@ -62,23 +62,19 @@ Add a daemon on the server:
 
 ### 6. nginx
 
-Edit the site's nginx configuration in Forge. Leave every `# FORGE ... (DO NOT REMOVE!)` line and the SSL lines alone. Replace the existing `location / { ... }` block (and remove any `location ~ \.php$` block) with:
+The complete site file is [`deploy/nginx-ddaygame.dev.conf`](../deploy/nginx-ddaygame.dev.conf). It is installed as `/etc/nginx/sites-available/ddaygame.dev`, which is the file Forge's nginx editor shows.
 
-```nginx
-location / {
-    proxy_pass http://127.0.0.1:3061;
-    proxy_http_version 1.1;
-    proxy_set_header Upgrade $http_upgrade;
-    proxy_set_header Connection "upgrade";
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_read_timeout 3600s;
-}
+Forge's generated file pulls in `forge-conf/<site-id>/site.conf`, which has its own `location /` that serves static files. nginx won't accept a second `location /`, so the repo's file drops that include and writes out its settings (SSL protocols and ciphers, security headers, charset) in full, with `location /` proxying to the game server instead. The `Upgrade`/`Connection` headers and the long read timeout are for the WebSocket connections used by online play.
+
+If the site is recreated, the site id (`3456495`) and the certificate paths under `# FORGE SSL` change: take the new values from Forge's generated file before replacing it.
+
+**To install or change it**, prefer copying the file to the server over SSH, then:
+
+```sh
+nginx -t && systemctl reload nginx
 ```
 
-The `Upgrade`/`Connection` headers and the long read timeout are for the WebSocket connections used by online play.
+Pasting into Forge's nginx editor has twice garbled the file (lines cut off part-way, such as `include forge-conf/3456495/serv`), leaving an invalid config on disk. If you do use the editor, reopen it after saving and check the `include` lines are complete. Never restart or reboot the server while `nginx -t` fails, because nginx won't start and karloneill.com goes down with it.
 
 ### 7. Check it
 
@@ -102,3 +98,4 @@ Push to `main`, then press **Deploy now** in Forge (or enable Forge's quick depl
 | Old version still showing      | The deploy script's `pkill` line ran; the daemon restarted after activation     |
 | Certificate request fails      | Cloudflare record is grey (DNS only) and `ddaygame.dev` resolves to the droplet |
 | Health check OK but page blank | `npm run build` succeeded in the deploy log                                     |
+| Site down after nginx change   | `nginx -t` on the server; compare with `deploy/nginx-ddaygame.dev.conf`         |
