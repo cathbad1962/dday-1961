@@ -1,0 +1,13 @@
+{
+  "name": "@dday/server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Game server for D-Day (1961): links, dice, hidden information, persistence",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@dday/engine": "*"
+  }
+}

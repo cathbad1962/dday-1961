@@ -1,10 +1,35 @@
 {
-  "name": "dday_1961",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "dday-1961",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Web app recreating Avalon Hill's 1961 D-Day boardgame",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npm run dev -w @dday/client",
+    "build": "npm run build -w @dday/client",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "format": "prettier --write .",
+    "check": "npm run lint && npm run typecheck && npm test"
   },
-  "private": true
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.13.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.72.0",
+    "vitest": "^5.0.5"
+  }
 }

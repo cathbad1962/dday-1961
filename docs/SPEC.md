@@ -4,7 +4,7 @@ As of 2026-10-23 · Karl O'Neill · Living copy: https://claude.ai/artifact/RPAJ
 
 ## Overview and goals
 
-A browser game that faithfully reproduces Avalon Hill's 1961 *D-Day* for two players online, or one player against a computer opponent. It is a personal project for Karl and friends, not a public release.
+A browser game that faithfully reproduces Avalon Hill's 1961 _D-Day_ for two players online, or one player against a computer opponent. It is a personal project for Karl and friends, not a public release.
 
 **Goals**
 
@@ -15,20 +15,20 @@ A browser game that faithfully reproduces Avalon Hill's 1961 *D-Day* for two pla
 
 **Decisions from the interview**
 
-| Topic | Decision |
-| --- | --- |
-| Edition | 1961 rules as baseline; 1965/1977 rules may become optional variants later |
-| Map grid | Hexes, per Karl's 1961 board |
-| Source of truth | Karl's physical copy (rulebook dated 1961) |
-| Rules enforcement | Fully automated; illegal moves are blocked |
-| Dice | App rolls by default; optional manual entry of physical dice |
-| Visual style | Modern, NATO unit symbols |
-| Hidden information | Secret Allied invasion choice; optional fog of war |
-| Play modes | Live online two-player; vs computer (either side) |
-| Online features | Save/resume, in-turn take-backs, link-based games (no accounts), chat, move log and replay |
-| Devices | Desktop browser only |
-| Hosting | Karl's existing DigitalOcean droplet |
-| Builder | Claude Code writes the code; Karl reviews and play-tests |
+| Topic              | Decision                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------------ |
+| Edition            | 1961 rules as baseline; 1965/1977 rules may become optional variants later                 |
+| Map grid           | Hexes, per Karl's 1961 board                                                               |
+| Source of truth    | Karl's physical copy (rulebook dated 1961)                                                 |
+| Rules enforcement  | Fully automated; illegal moves are blocked                                                 |
+| Dice               | App rolls by default; optional manual entry of physical dice                               |
+| Visual style       | Modern, NATO unit symbols                                                                  |
+| Hidden information | Secret Allied invasion choice; optional fog of war                                         |
+| Play modes         | Live online two-player; vs computer (either side)                                          |
+| Online features    | Save/resume, in-turn take-backs, link-based games (no accounts), chat, move log and replay |
+| Devices            | Desktop browser only                                                                       |
+| Hosting            | Karl's existing DigitalOcean droplet                                                       |
+| Builder            | Claude Code writes the code; Karl reviews and play-tests                                   |
 
 **Out of scope for v1:** user accounts, spectators, play-by-email, tablet and phone layouts, public release.
 
@@ -102,14 +102,14 @@ The editor is built first, and Karl uses it to enter the whole board, counter mi
 
 **Data files**
 
-| File | Contents |
-| --- | --- |
-| `data/map.json` | Grid, terrain per hex, hexside features, special hexes |
-| `data/units.json` | Every counter and its values |
-| `data/setup.json` | Starting positions |
-| `data/reinforcements.json` | Arrival and withdrawal schedule by turn |
-| `data/crt.json` | Combat results table |
-| `data/terrain.json` | Terrain types, movement costs, combat effects |
+| File                       | Contents                                               |
+| -------------------------- | ------------------------------------------------------ |
+| `data/map.json`            | Grid, terrain per hex, hexside features, special hexes |
+| `data/units.json`          | Every counter and its values                           |
+| `data/setup.json`          | Starting positions                                     |
+| `data/reinforcements.json` | Arrival and withdrawal schedule by turn                |
+| `data/crt.json`            | Combat results table                                   |
+| `data/terrain.json`        | Terrain types, movement costs, combat effects          |
 
 The rules engine validates all files on load and refuses to start a game with inconsistent data.
 
@@ -209,13 +209,13 @@ The browser sends actions over a WebSocket; the server's copy of the engine is t
 
 **Packages**
 
-| Package | Role | Main tools |
-| --- | --- | --- |
-| `packages/engine` | Pure game rules: state, legal actions, apply action, combat, victory. No I/O, fully deterministic given a dice seed. | TypeScript, Vitest |
-| `packages/client` | Game UI and editor | React, Vite, SVG hex map |
-| `packages/server` | Game hosting, links, dice, hidden info, chat, persistence | Node.js, Fastify, WebSockets (`ws`) |
-| `packages/ai` | Computer opponents behind the `Player` interface | TypeScript |
-| `data/` | Map, units, setup, reinforcements, CRT, terrain (JSON) | JSON Schema validation (Zod) |
+| Package           | Role                                                                                                                 | Main tools                          |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `packages/engine` | Pure game rules: state, legal actions, apply action, combat, victory. No I/O, fully deterministic given a dice seed. | TypeScript, Vitest                  |
+| `packages/client` | Game UI and editor                                                                                                   | React, Vite, SVG hex map            |
+| `packages/server` | Game hosting, links, dice, hidden info, chat, persistence                                                            | Node.js, Fastify, WebSockets (`ws`) |
+| `packages/ai`     | Computer opponents behind the `Player` interface                                                                     | TypeScript                          |
+| `data/`           | Map, units, setup, reinforcements, CRT, terrain (JSON)                                                               | JSON Schema validation (Zod)        |
 
 **Core design: event-sourced games**
 
@@ -251,62 +251,62 @@ The plan is 54 work days of 2 hours each (about 108 hours), counted in work days
 
 Estimates firm up after rules capture (days 3–6): if the rulebook has more subsystems than expected (e.g. air power, naval rules), Phase 2 grows. Karl's own time entering the map (day 12) and play-testing is in addition to these days.
 
-| Day | Phase | Work | Done when |
-| --- | --- | --- | --- |
-| 1 | 0 Foundations | Monorepo scaffold: TypeScript, Vite, React, Vitest, lint, git | `npm test` passes; blank client page runs locally |
-| 2 | 0 Foundations | Droplet setup: HTTPS reverse proxy, systemd service, deploy script | Placeholder page live on Karl's subdomain |
-| 3 | 0 Rules capture | Transcribe rulebook from Karl's photos, first half | Numbered `rulebook-1961.md` part 1 |
-| 4 | 0 Rules capture | Transcribe second half, CRT, terrain and turn charts | Full rulebook transcribed; `crt.json` drafted |
-| 5 | 0 Rules capture | Structured rules spec, first half | Testable rule statements with citations |
-| 6 | 0 Rules capture | Rules spec second half; rulings register opened | Karl reviews spec and first rulings |
-| 7 | 1 Editor | Hex grid maths: coordinates, neighbours, distance, lines | Unit tests pass |
-| 8 | 1 Editor | SVG hex map rendering, pan, zoom | Empty grid of the board's size on screen |
-| 9 | 1 Editor | Terrain palette, painting, save/load `map.json` | Terrain painted and reloaded |
-| 10 | 1 Editor | Hexside features: rivers, coastline, fortified lines | Features drawn and saved |
-| 11 | 1 Editor | Special-hex tags, board-photo overlay, map validation | Karl can start entering the board |
-| 12 | 1 Editor | Karl enters the map; Claude fixes editor issues he finds | Complete `map.json` checked against the board |
-| 13 | 1 Editor | Unit editor and NATO counter rendering | Counter sheet entered as `units.json` |
-| 14 | 1 Editor | Setup placement and reinforcement schedule editors | `setup.json` and `reinforcements.json` complete |
-| 15 | 1 Editor | Data schemas and cross-file validation | All data loads with zero errors |
-| 16 | 2 Engine | State model, action model, event-sourced replay, seeded dice | Empty game replays deterministically |
-| 17 | 2 Engine | Turn and phase sequencer | Turns cycle through all phases in rulebook order |
-| 18 | 2 Engine | Movement: terrain costs, reachable hexes | Movement tests pass |
-| 19 | 2 Engine | Zones of control and stacking | ZOC and stacking tests pass |
-| 20 | 2 Engine | Invasion choice, landings, beachheads | Landing tests pass |
-| 21 | 2 Engine | Reinforcements and withdrawals | Schedule applied correctly over a full game |
-| 22 | 2 Engine | Supply and any remaining movement rules | Supply tests pass |
-| 23 | 2 Engine | Combat: attack designation, odds, CRT lookup | Combat tests pass |
-| 24 | 2 Engine | Combat results: eliminations, retreats, advances | Result tests pass |
-| 25 | 2 Engine | Victory conditions and game end | Victory tests pass |
-| 26 | 2 Hotseat | Play UI: select, move, overlays | Units moved legally on screen |
-| 27 | 2 Hotseat | Combat dialog, move log, undo | Full turn playable hotseat |
-| 28 | 2 Hotseat | "Why?" rule explanations; rule-coverage report | Every blocked move explains itself |
-| 29 | 2 Hotseat | Scenario and replay tests; fixes | Coverage report shows no untested rule |
-| 30 | 2 Hotseat | Karl play-tests a hotseat game against his board; fixes | Karl signs off on hotseat play |
-| 31 | 3 Online | Server: game creation, seat links, SQLite storage | Game created and reloaded from links |
-| 32 | 3 Online | WebSocket sync, server-side validation and dice | Two browsers see each other's moves |
-| 33 | 3 Online | Filtered views; secret invasion choice | Hidden-info tests pass |
-| 34 | 3 Online | Take-backs, reconnect, connection status | Dropped player rejoins mid-turn |
-| 35 | 3 Online | Chat and "my games" home page | Chat persists across sessions |
-| 36 | 3 Online | Replay viewer | Finished game replays step by step |
-| 37 | 3 Online | Deploy; Karl plays a friend online | Online game completed on the droplet |
-| 38 | 4 Basic AI | `Player` interface, AI harness, AI-vs-AI soak test | Random-legal AI finishes full games |
-| 39 | 4 Basic AI | German AI: hold line, counter-attack landings | German AI beats random play |
-| 40 | 4 Basic AI | German AI: fallback lines, odds threshold | Karl finds German AI plausible |
-| 41 | 4 Basic AI | Allied AI: invasion choice, landings | Allied AI lands and holds a beachhead |
-| 42 | 4 Basic AI | Allied AI: breakout and advance on objectives | Allied AI beats random play |
-| 43 | 4 Basic AI | Play vs computer from the UI, animated AI moves | Karl plays a full game against each AI side |
-| 44 | 5 Polish | Optional fog of war | Fog tests pass; toggle at game setup |
-| 45 | 5 Polish | Physical-dice mode; house-rule options screen | Options apply to new games |
-| 46 | 5 Polish | Visual polish, colour-blind check, minimap | Karl approves the look |
-| 47 | 5 Polish | Keyboard shortcuts, performance pass, nightly backups | Backups verified by a test restore |
-| 48 | 5 Polish | v1 play-test and bug fixes | **v1 released to friends** |
-| 49 | 6 Strong AI | Position evaluation function | Evaluation ranks test positions sensibly |
-| 50 | 6 Strong AI | Monte Carlo planner for combat choices | Beats basic AI in combat-only tests |
-| 51 | 6 Strong AI | Planner extended to movement | Beats basic AI over full games |
-| 52 | 6 Strong AI | Difficulty levels | Easy/normal/hard selectable |
-| 53 | 6 Strong AI | Self-play benchmark and tuning | Win-rate report against basic AI |
-| 54 | 6 Strong AI | Final tuning and release | Stronger AI live |
+| Day | Phase           | Work                                                               | Done when                                         |
+| --- | --------------- | ------------------------------------------------------------------ | ------------------------------------------------- |
+| 1   | 0 Foundations   | Monorepo scaffold: TypeScript, Vite, React, Vitest, lint, git      | `npm test` passes; blank client page runs locally |
+| 2   | 0 Foundations   | Droplet setup: HTTPS reverse proxy, systemd service, deploy script | Placeholder page live on Karl's subdomain         |
+| 3   | 0 Rules capture | Transcribe rulebook from Karl's photos, first half                 | Numbered `rulebook-1961.md` part 1                |
+| 4   | 0 Rules capture | Transcribe second half, CRT, terrain and turn charts               | Full rulebook transcribed; `crt.json` drafted     |
+| 5   | 0 Rules capture | Structured rules spec, first half                                  | Testable rule statements with citations           |
+| 6   | 0 Rules capture | Rules spec second half; rulings register opened                    | Karl reviews spec and first rulings               |
+| 7   | 1 Editor        | Hex grid maths: coordinates, neighbours, distance, lines           | Unit tests pass                                   |
+| 8   | 1 Editor        | SVG hex map rendering, pan, zoom                                   | Empty grid of the board's size on screen          |
+| 9   | 1 Editor        | Terrain palette, painting, save/load `map.json`                    | Terrain painted and reloaded                      |
+| 10  | 1 Editor        | Hexside features: rivers, coastline, fortified lines               | Features drawn and saved                          |
+| 11  | 1 Editor        | Special-hex tags, board-photo overlay, map validation              | Karl can start entering the board                 |
+| 12  | 1 Editor        | Karl enters the map; Claude fixes editor issues he finds           | Complete `map.json` checked against the board     |
+| 13  | 1 Editor        | Unit editor and NATO counter rendering                             | Counter sheet entered as `units.json`             |
+| 14  | 1 Editor        | Setup placement and reinforcement schedule editors                 | `setup.json` and `reinforcements.json` complete   |
+| 15  | 1 Editor        | Data schemas and cross-file validation                             | All data loads with zero errors                   |
+| 16  | 2 Engine        | State model, action model, event-sourced replay, seeded dice       | Empty game replays deterministically              |
+| 17  | 2 Engine        | Turn and phase sequencer                                           | Turns cycle through all phases in rulebook order  |
+| 18  | 2 Engine        | Movement: terrain costs, reachable hexes                           | Movement tests pass                               |
+| 19  | 2 Engine        | Zones of control and stacking                                      | ZOC and stacking tests pass                       |
+| 20  | 2 Engine        | Invasion choice, landings, beachheads                              | Landing tests pass                                |
+| 21  | 2 Engine        | Reinforcements and withdrawals                                     | Schedule applied correctly over a full game       |
+| 22  | 2 Engine        | Supply and any remaining movement rules                            | Supply tests pass                                 |
+| 23  | 2 Engine        | Combat: attack designation, odds, CRT lookup                       | Combat tests pass                                 |
+| 24  | 2 Engine        | Combat results: eliminations, retreats, advances                   | Result tests pass                                 |
+| 25  | 2 Engine        | Victory conditions and game end                                    | Victory tests pass                                |
+| 26  | 2 Hotseat       | Play UI: select, move, overlays                                    | Units moved legally on screen                     |
+| 27  | 2 Hotseat       | Combat dialog, move log, undo                                      | Full turn playable hotseat                        |
+| 28  | 2 Hotseat       | "Why?" rule explanations; rule-coverage report                     | Every blocked move explains itself                |
+| 29  | 2 Hotseat       | Scenario and replay tests; fixes                                   | Coverage report shows no untested rule            |
+| 30  | 2 Hotseat       | Karl play-tests a hotseat game against his board; fixes            | Karl signs off on hotseat play                    |
+| 31  | 3 Online        | Server: game creation, seat links, SQLite storage                  | Game created and reloaded from links              |
+| 32  | 3 Online        | WebSocket sync, server-side validation and dice                    | Two browsers see each other's moves               |
+| 33  | 3 Online        | Filtered views; secret invasion choice                             | Hidden-info tests pass                            |
+| 34  | 3 Online        | Take-backs, reconnect, connection status                           | Dropped player rejoins mid-turn                   |
+| 35  | 3 Online        | Chat and "my games" home page                                      | Chat persists across sessions                     |
+| 36  | 3 Online        | Replay viewer                                                      | Finished game replays step by step                |
+| 37  | 3 Online        | Deploy; Karl plays a friend online                                 | Online game completed on the droplet              |
+| 38  | 4 Basic AI      | `Player` interface, AI harness, AI-vs-AI soak test                 | Random-legal AI finishes full games               |
+| 39  | 4 Basic AI      | German AI: hold line, counter-attack landings                      | German AI beats random play                       |
+| 40  | 4 Basic AI      | German AI: fallback lines, odds threshold                          | Karl finds German AI plausible                    |
+| 41  | 4 Basic AI      | Allied AI: invasion choice, landings                               | Allied AI lands and holds a beachhead             |
+| 42  | 4 Basic AI      | Allied AI: breakout and advance on objectives                      | Allied AI beats random play                       |
+| 43  | 4 Basic AI      | Play vs computer from the UI, animated AI moves                    | Karl plays a full game against each AI side       |
+| 44  | 5 Polish        | Optional fog of war                                                | Fog tests pass; toggle at game setup              |
+| 45  | 5 Polish        | Physical-dice mode; house-rule options screen                      | Options apply to new games                        |
+| 46  | 5 Polish        | Visual polish, colour-blind check, minimap                         | Karl approves the look                            |
+| 47  | 5 Polish        | Keyboard shortcuts, performance pass, nightly backups              | Backups verified by a test restore                |
+| 48  | 5 Polish        | v1 play-test and bug fixes                                         | **v1 released to friends**                        |
+| 49  | 6 Strong AI     | Position evaluation function                                       | Evaluation ranks test positions sensibly          |
+| 50  | 6 Strong AI     | Monte Carlo planner for combat choices                             | Beats basic AI in combat-only tests               |
+| 51  | 6 Strong AI     | Planner extended to movement                                       | Beats basic AI over full games                    |
+| 52  | 6 Strong AI     | Difficulty levels                                                  | Easy/normal/hard selectable                       |
+| 53  | 6 Strong AI     | Self-play benchmark and tuning                                     | Win-rate report against basic AI                  |
+| 54  | 6 Strong AI     | Final tuning and release                                           | Stronger AI live                                  |
 
 ## Open questions and risks
 
@@ -320,11 +320,11 @@ Estimates firm up after rules capture (days 3–6): if the rulebook has more sub
 
 **Risks**
 
-| Risk | Effect | Mitigation |
-| --- | --- | --- |
-| Rules are bigger or more ambiguous than expected | Phase 2 overruns | Re-estimate after day 6; rulings register keeps decisions moving |
-| Map entry takes longer than a day | Editor phase slips | Board-photo overlay for tracing; entry can run alongside engine work |
-| Basic AI plays poorly | Solo games feel flat | Tune thresholds in play-tests; stronger AI phase follows |
-| Shareable links leaked | Someone else could take a seat | Long random secrets; option to regenerate a seat link |
-| Copyright on Avalon Hill material | Problem if ever made public | Personal use only; no original artwork reproduced, modern NATO styling |
-| Droplet failure | Lost games | Nightly SQLite backups off the droplet |
+| Risk                                             | Effect                         | Mitigation                                                             |
+| ------------------------------------------------ | ------------------------------ | ---------------------------------------------------------------------- |
+| Rules are bigger or more ambiguous than expected | Phase 2 overruns               | Re-estimate after day 6; rulings register keeps decisions moving       |
+| Map entry takes longer than a day                | Editor phase slips             | Board-photo overlay for tracing; entry can run alongside engine work   |
+| Basic AI plays poorly                            | Solo games feel flat           | Tune thresholds in play-tests; stronger AI phase follows               |
+| Shareable links leaked                           | Someone else could take a seat | Long random secrets; option to regenerate a seat link                  |
+| Copyright on Avalon Hill material                | Problem if ever made public    | Personal use only; no original artwork reproduced, modern NATO styling |
+| Droplet failure                                  | Lost games                     | Nightly SQLite backups off the droplet                                 |
