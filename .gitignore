@@ -4,3 +4,7 @@ dist/
 *.log
 .idea/
 *.sqlite
+
+# Rulebook photos and transcription (copyright Avalon Hill; kept local only)
+docs/rules/photos/
+docs/rules/rulebook-1961.md
