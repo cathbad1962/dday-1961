@@ -1,12 +1,8 @@
-import { GAME_TITLE, RULES_EDITION } from '@dday/engine';
+import { boardHexes } from '@dday/engine';
+import { HexMap } from './map/HexMap';
+
+const BOARD_HEXES = boardHexes();
 
 export function App() {
-  return (
-    <main className="placeholder">
-      <h1>
-        {GAME_TITLE} {RULES_EDITION}
-      </h1>
-      <p>Scaffold is running. The map editor arrives in milestone days 7–15.</p>
-    </main>
-  );
+  return <HexMap hexes={BOARD_HEXES} />;
 }

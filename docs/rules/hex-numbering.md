@@ -66,6 +66,15 @@ Confirmed by Karl from his board:
 | South-west corner of the board | `r47` (the pencil mark on the board there is wrong) |
 | Bottom edge near the corner | `v47` |
 
+## Board outline
+
+Measured from the board photos on 2026-11-01, and not yet confirmed by Karl. `boardHexes` in `packages/engine/src/board.ts` holds these figures.
+
+- **Top edge:** the east edge runs through `RR2`, `QQ4`, `PP6` and `OO8`, falling one letter every two columns. Even columns end in a half hex.
+- **North end:** the photos show two columns north of column 1, with the sea hexes pencilled `SS`, `RR`, `QQ`, `PP` and `OO` in the outer one. Counted from Bremen in column 2, these are columns 0 and −1. They have no numbers yet, so the app leaves them unlabelled.
+- **Bottom edge:** the lowest hexes seen are around `A21` and `A22`, so the grid's bottom edge is set just below them. This is an estimate.
+- **Unprinted sea:** the board prints hexes only in a band along the coast. The grid is a full rectangle, with its south-west corner cut at the `r` line, so it includes sea with no printed hexes. Map entry decides which hexes exist.
+
 ## Other pencil marks
 
 Karl's board also has pencil marks that are not part of this scheme: single capitals along the north-east edge, and numbers (29–44) in the sea west of Normandy and Brittany, which have been erased and survive only as faint traces. Karl confirmed (2026-10-24) that both are irrelevant; the app ignores them.

@@ -3,6 +3,7 @@
  * Pure functions only: no I/O, no clocks, no unseeded randomness.
  */
 
+export * from './board';
 export * from './hex';
 
 export const GAME_TITLE = 'D-Day';

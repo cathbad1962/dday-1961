@@ -7,8 +7,30 @@ body {
   margin: 0;
 }
 
-.placeholder {
-  max-width: 40rem;
-  margin: 4rem auto;
-  padding: 0 1rem;
+.hex-map {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.hex-map:active {
+  cursor: grabbing;
+}
+
+.hex-map-grid {
+  fill: light-dark(#f5f1e6, #23262b);
+  stroke: light-dark(#8a8578, #6b6f76);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.hex-map-labels text {
+  fill: light-dark(#6b675c, #9a9ea6);
+  font-size: 7px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
 }
