@@ -1,4 +1,4 @@
-import type { Hex } from '@dday/engine';
+import { roundHex, type Hex } from '@dday/engine';
 
 /** Centre-to-corner size of a hex, in map units. */
 export const HEX_SIZE = 20;
@@ -28,6 +28,13 @@ export function hexCentre({ l, n }: Hex): Point {
     x: 1.5 * HEX_SIZE * n,
     y: -Math.sqrt(3) * HEX_SIZE * (l + n / 2),
   };
+}
+
+/** The hex under a point on the screen, measured from the map's top-left corner. */
+export function hexAtScreenPoint(view: View, { x, y }: Point): Hex {
+  const n = (x - view.x) / view.scale / (1.5 * HEX_SIZE);
+  const l = -(y - view.y) / view.scale / (Math.sqrt(3) * HEX_SIZE) - n / 2;
+  return roundHex(l, n);
 }
 
 export function hexOutline(hex: Hex): string {

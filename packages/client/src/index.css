@@ -21,16 +21,161 @@ body {
 }
 
 .hex-map-grid {
-  fill: light-dark(#f5f1e6, #23262b);
   stroke: light-dark(#8a8578, #6b6f76);
   stroke-width: 1px;
   vector-effect: non-scaling-stroke;
 }
 
 .hex-map-labels text {
-  fill: light-dark(#6b675c, #9a9ea6);
+  fill: #2b2a26;
+  stroke: rgb(255 255 255 / 70%);
+  stroke-width: 2px;
+  paint-order: stroke;
   font-size: 7px;
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
+}
+
+.terrain-unpainted {
+  fill: light-dark(#ececec, #23262b);
+}
+
+.terrain-clear {
+  fill: #f5efe0;
+}
+
+.terrain-sea {
+  fill: #bcd6e6;
+}
+
+.terrain-city {
+  fill: #a9a39a;
+}
+
+.terrain-fortified {
+  fill: #f0b8a4;
+}
+
+.terrain-fortress {
+  fill: #c9413a;
+}
+
+.terrain-mountain {
+  fill: #9a6a44;
+}
+
+.terrain-impassable {
+  fill: #33302c;
+}
+
+.terrain-neutral {
+  fill: #d3cfc6;
+}
+
+.terrain-none {
+  fill: transparent;
+  stroke-opacity: 0.25;
+}
+
+.terrain-erase {
+  background: linear-gradient(135deg, #fff 45%, #c9413a 45% 55%, #fff 55%);
+}
+
+.palette {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 160px;
+  padding: 8px;
+  border-radius: 8px;
+  background: light-dark(#fff, #1b1d21);
+  box-shadow: 0 1px 6px rgb(0 0 0 / 35%);
+}
+
+.palette button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.palette button:hover:enabled {
+  background: light-dark(#eee, #2a2d33);
+}
+
+.palette button[aria-pressed='true'] {
+  border-color: currentcolor;
+}
+
+.palette button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.swatch {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #8a8578;
+  border-radius: 2px;
+  background-color: currentcolor;
+}
+
+.swatch.terrain-clear {
+  background-color: #f5efe0;
+}
+
+.swatch.terrain-sea {
+  background-color: #bcd6e6;
+}
+
+.swatch.terrain-city {
+  background-color: #a9a39a;
+}
+
+.swatch.terrain-fortified {
+  background-color: #f0b8a4;
+}
+
+.swatch.terrain-fortress {
+  background-color: #c9413a;
+}
+
+.swatch.terrain-mountain {
+  background-color: #9a6a44;
+}
+
+.swatch.terrain-impassable {
+  background-color: #33302c;
+}
+
+.swatch.terrain-neutral {
+  background-color: #d3cfc6;
+}
+
+.swatch.terrain-none {
+  background-color: transparent;
+}
+
+.palette-hint {
+  margin: 4px 2px 0;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.map-error {
+  margin: 4px 2px;
+  color: #c9413a;
+  font-size: 13px;
 }

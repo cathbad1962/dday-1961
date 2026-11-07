@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { boardHexes } from './board';
+import { boardHexes, isBoardHex } from './board';
 import { hexEquals, parseHex } from './hex';
 
 describe('board hexes', () => {
@@ -20,6 +20,13 @@ describe('board hexes', () => {
     for (const label of ['SS2', 'RR4', 'QQ6', 'PP8']) {
       expect(onBoard(label)).toBe(false);
     }
+  });
+
+  it('agrees with the list of hexes about what is on the board', () => {
+    for (const hex of hexes) expect(isBoardHex(hex)).toBe(true);
+    expect(isBoardHex(parseHex('SS2'))).toBe(false);
+    expect(isBoardHex({ l: 20, n: 48 })).toBe(false);
+    expect(isBoardHex({ l: 20, n: -2 })).toBe(false);
   });
 
   it('holds each hex once', () => {

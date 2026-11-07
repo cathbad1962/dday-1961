@@ -71,7 +71,7 @@ Confirmed by Karl from his board:
 Measured from the board photos on 2026-11-01, and not yet confirmed by Karl. `boardHexes` in `packages/engine/src/board.ts` holds these figures.
 
 - **Top edge:** the east edge runs through `RR2`, `QQ4`, `PP6` and `OO8`, falling one letter every two columns. Even columns end in a half hex.
-- **North end:** the photos show two columns north of column 1, with the sea hexes pencilled `SS`, `RR`, `QQ`, `PP` and `OO` in the outer one. Counted from Bremen in column 2, these are columns 0 and −1. They have no numbers yet, so the app leaves them unlabelled.
+- **North end:** the photos show two columns north of column 1, with the sea hexes pencilled `SS`, `RR`, `QQ`, `PP` and `OO` in the outer one. Counted from Bremen in column 2, these are columns 0 and −1. They have no numbers on the board, so the app calls them `0` and `-1` for now (`SS-1`, `QQ0`).
 - **Bottom edge:** the lowest hexes seen are around `A21` and `A22`, so the grid's bottom edge is set just below them. This is an estimate.
 - **Unprinted sea:** the board prints hexes only in a band along the coast. The grid is a full rectangle, with its south-west corner cut at the `r` line, so it includes sea with no printed hexes. Map entry decides which hexes exist.
 

@@ -32,12 +32,17 @@ describe('hex labels', () => {
     expect(parseHex('ZZ1')).toEqual({ l: 52, n: 1 });
   });
 
+  it('labels the columns north of 1', () => {
+    expect(parseHex('SS-1')).toEqual({ l: 45, n: -1 });
+    expect(formatHex({ l: 45, n: 0 })).toBe('SS0');
+  });
+
   it('treats case as significant', () => {
     expect(parseHex('v44')).toEqual({ l: -4, n: 44 });
     expect(parseHex('V44')).toEqual({ l: 22, n: 44 });
   });
 
-  it.each(['', 'K', '16', 'K0', 'K016', 'K-1', 'K1.5', 'a1', 'q1', 'AB1', 'aa1', 'AAA1', ' K16'])(
+  it.each(['', 'K', '16', 'K016', 'K-2', 'K1.5', 'a1', 'q1', 'AB1', 'aa1', 'AAA1', ' K16'])(
     'rejects %j',
     (label) => {
       expect(() => parseHex(label)).toThrow(RangeError);
@@ -54,7 +59,7 @@ describe('hex labels', () => {
   it.each([
     [-9, 1],
     [53, 1],
-    [1, 0],
+    [1, -2],
     [1.5, 1],
   ])('has no label for %d,%d', (l, n) => {
     expect(() => formatHex({ l, n })).toThrow(RangeError);

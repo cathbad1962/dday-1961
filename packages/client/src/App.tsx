@@ -1,8 +1,5 @@
-import { boardHexes } from '@dday/engine';
-import { HexMap } from './map/HexMap';
-
-const BOARD_HEXES = boardHexes();
+import { MapEditor } from './map/MapEditor';
 
 export function App() {
-  return <HexMap hexes={BOARD_HEXES} />;
+  return <MapEditor />;
 }

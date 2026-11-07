@@ -33,7 +33,8 @@ const DIRECTION_OFFSETS: Record<Direction, Hex> = {
 const LOWERCASE_LETTERS = 'rstuvwxyz';
 const MIN_LETTER_INDEX = -8;
 const MAX_LETTER_INDEX = 52;
-const HEX_LABEL = /^([r-z]|[A-Z]|([A-Z])\2)([1-9]\d*)$/;
+const MIN_NUMBER = -1;
+const HEX_LABEL = /^([r-z]|[A-Z]|([A-Z])\2)(-1|0|[1-9]\d*)$/;
 
 // Keeps rounding off exact ties, so a line between two hexes never depends on float noise.
 const LINE_NUDGE_L = 1e-6;
@@ -69,7 +70,7 @@ export function formatHex({ l, n }: Hex): string {
     Number.isInteger(n) &&
     l >= MIN_LETTER_INDEX &&
     l <= MAX_LETTER_INDEX &&
-    n >= 1;
+    n >= MIN_NUMBER;
   if (!labelled) throw new RangeError(`Hex has no label: ${l},${n}`);
   return `${indexToLetter(l)}${n}`;
 }
@@ -94,7 +95,8 @@ export function hexDistance(a: Hex, b: Hex): number {
   return Math.max(Math.abs(dl), Math.abs(dn), Math.abs(dl + dn));
 }
 
-function roundHex(l: number, n: number): Hex {
+/** The hex containing a point given in fractional coordinates. */
+export function roundHex(l: number, n: number): Hex {
   const s = -l - n;
   let roundedL = Math.round(l);
   let roundedN = Math.round(n);

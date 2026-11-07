@@ -1,6 +1,6 @@
 import { boardHexes, parseHex } from '@dday/engine';
 import { describe, expect, it } from 'vitest';
-import { fitView, hexCentre, HEX_SIZE, panView, zoomView } from './geometry';
+import { fitView, hexAtScreenPoint, hexCentre, HEX_SIZE, panView, zoomView } from './geometry';
 
 describe('hex layout', () => {
   it('puts the east up the screen and the south to the right', () => {
@@ -15,6 +15,17 @@ describe('hex layout', () => {
 });
 
 describe('map view', () => {
+  it('finds the hex under a screen point', () => {
+    const view = { x: 40, y: 900, scale: 0.75 };
+    for (const label of ['K16', 'QQ2', 'r47', 'z30']) {
+      const hex = parseHex(label);
+      const { x, y } = hexCentre(hex);
+      const off = HEX_SIZE * 0.6 * view.scale;
+      const point = { x: x * view.scale + view.x + off, y: y * view.scale + view.y };
+      expect(hexAtScreenPoint(view, point)).toEqual(hex);
+    }
+  });
+
   it('fits the whole board inside the viewport', () => {
     const hexes = boardHexes();
     const viewport = { width: 1280, height: 720 };

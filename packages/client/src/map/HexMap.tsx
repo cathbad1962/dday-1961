@@ -1,7 +1,8 @@
-import { formatHex, type Hex } from '@dday/engine';
+import { formatHex, hexLine, type Hex, type TerrainMap, type TerrainType } from '@dday/engine';
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
 import {
   fitView,
+  hexAtScreenPoint,
   hexCentre,
   hexOutline,
   panView,
@@ -15,28 +16,40 @@ const ZOOM_PER_WHEEL_PIXEL = 0.002;
 
 interface HexMapProps {
   hexes: readonly Hex[];
+  terrain: TerrainMap;
+  /** Given, the left button paints and the other buttons pan. Otherwise any button pans. */
+  onPaint?: (hexes: Hex[]) => void;
 }
 
-export function HexMap({ hexes }: HexMapProps) {
+type Drag = { kind: 'pan'; last: Point } | { kind: 'paint'; last: Hex };
+
+export function HexMap({ hexes, terrain, onPaint }: HexMapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const dragRef = useRef<Point | null>(null);
+  const dragRef = useRef<Drag | null>(null);
   const [view, setView] = useState<View | null>(null);
 
-  const outlines = useMemo(() => hexes.map(hexOutline).join(''), [hexes]);
+  const outlines = useMemo(() => {
+    const byTerrain = new Map<TerrainType | 'unpainted', string[]>();
+    for (const hex of hexes) {
+      const type = terrain[formatHex(hex)] ?? 'unpainted';
+      const group = byTerrain.get(type);
+      if (group) group.push(hexOutline(hex));
+      else byTerrain.set(type, [hexOutline(hex)]);
+    }
+    return [...byTerrain].map(([type, paths]) => ({ type, path: paths.join('') }));
+  }, [hexes, terrain]);
+
   const labels = useMemo(
     () =>
-      // Columns north of 1 have no numbers yet, so they stay unlabelled.
-      hexes
-        .filter((hex) => hex.n >= 1)
-        .map((hex) => {
-          const { x, y } = hexCentre(hex);
-          const label = formatHex(hex);
-          return (
-            <text key={label} x={x} y={y}>
-              {label}
-            </text>
-          );
-        }),
+      hexes.map((hex) => {
+        const { x, y } = hexCentre(hex);
+        const label = formatHex(hex);
+        return (
+          <text key={label} x={x} y={y}>
+            {label}
+          </text>
+        );
+      }),
     [hexes],
   );
 
@@ -58,18 +71,37 @@ export function HexMap({ hexes }: HexMapProps) {
     return () => svg.removeEventListener('wheel', onWheel);
   }, [hexes]);
 
+  const hexUnderPointer = (event: PointerEvent<SVGSVGElement>, currentView: View) => {
+    const { left, top } = event.currentTarget.getBoundingClientRect();
+    return hexAtScreenPoint(currentView, { x: event.clientX - left, y: event.clientY - top });
+  };
+
   const startDrag = (event: PointerEvent<SVGSVGElement>) => {
+    if (!view) return;
     event.currentTarget.setPointerCapture(event.pointerId);
-    dragRef.current = { x: event.clientX, y: event.clientY };
+    if (onPaint && event.button === 0) {
+      const hex = hexUnderPointer(event, view);
+      dragRef.current = { kind: 'paint', last: hex };
+      onPaint([hex]);
+    } else {
+      dragRef.current = { kind: 'pan', last: { x: event.clientX, y: event.clientY } };
+    }
   };
 
   const drag = (event: PointerEvent<SVGSVGElement>) => {
-    const last = dragRef.current;
-    if (!last) return;
-    const dx = event.clientX - last.x;
-    const dy = event.clientY - last.y;
-    dragRef.current = { x: event.clientX, y: event.clientY };
-    setView((current) => current && panView(current, dx, dy));
+    const current = dragRef.current;
+    if (!current || !view) return;
+    if (current.kind === 'paint') {
+      const hex = hexUnderPointer(event, view);
+      // A fast drag skips hexes between pointer events, so fill in the line between them.
+      onPaint?.(hexLine(current.last, hex));
+      dragRef.current = { kind: 'paint', last: hex };
+    } else {
+      const dx = event.clientX - current.last.x;
+      const dy = event.clientY - current.last.y;
+      dragRef.current = { kind: 'pan', last: { x: event.clientX, y: event.clientY } };
+      setView(panView(view, dx, dy));
+    }
   };
 
   const endDrag = () => {
@@ -84,10 +116,13 @@ export function HexMap({ hexes }: HexMapProps) {
       onPointerMove={drag}
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
+      onContextMenu={(event) => event.preventDefault()}
     >
       {view && (
         <g transform={`translate(${view.x} ${view.y}) scale(${view.scale})`}>
-          <path className="hex-map-grid" d={outlines} />
+          {outlines.map(({ type, path }) => (
+            <path key={type} className={`hex-map-grid terrain-${type}`} d={path} />
+          ))}
           {view.scale >= LABEL_MIN_SCALE && <g className="hex-map-labels">{labels}</g>}
         </g>
       )}

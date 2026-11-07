@@ -16,12 +16,22 @@ const LOWEST_LETTER = -8;
 const TOP_EDGE = 45;
 const BOTTOM_EDGE = 11.5;
 
+function highestLetter(n: number): number {
+  return Math.floor(TOP_EDGE - n / 2);
+}
+
+function lowestLetter(n: number): number {
+  return Math.max(LOWEST_LETTER, Math.ceil(BOTTOM_EDGE - n / 2));
+}
+
 export function boardHexes(): Hex[] {
   const hexes: Hex[] = [];
   for (let n = FIRST_COLUMN; n <= LAST_COLUMN; n++) {
-    const highest = Math.floor(TOP_EDGE - n / 2);
-    const lowest = Math.max(LOWEST_LETTER, Math.ceil(BOTTOM_EDGE - n / 2));
-    for (let l = lowest; l <= highest; l++) hexes.push({ l, n });
+    for (let l = lowestLetter(n); l <= highestLetter(n); l++) hexes.push({ l, n });
   }
   return hexes;
+}
+
+export function isBoardHex({ l, n }: Hex): boolean {
+  return n >= FIRST_COLUMN && n <= LAST_COLUMN && l >= lowestLetter(n) && l <= highestLetter(n);
 }
