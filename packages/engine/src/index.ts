@@ -5,6 +5,7 @@
 
 export * from './board';
 export * from './hex';
+export * from './hexside';
 export * from './map';
 
 export const GAME_TITLE = 'D-Day';

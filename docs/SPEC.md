@@ -83,7 +83,7 @@ The editor is built first, and Karl uses it to enter the whole board, counter mi
 
 - Set the grid size (columns × rows) and hex orientation to match the board; show the board's own row/column numbering if it has one.
 - Paint terrain onto hexes from a palette (clear, forest, rough, city, coast, sea and so on, as defined by the rulebook's terrain key).
-- Draw hexside features: rivers, major rivers, fortified lines, coastline.
+- Draw hexside features: rivers, and which river edges form the Rhine–IJssel line. The 1961 rules have no other edge features: the coast follows from sea hexes, and fortified zones are hexes.
 - Tag special hexes: invasion areas, ports, reinforcement entry hexes, victory hexes, map-edge exits.
 - Optional background: load a photo of the board under the grid at adjustable opacity, for tracing.
 - Validate: flag unpainted hexes and features that do not touch a hex edge.
@@ -262,7 +262,7 @@ Estimates firm up after rules capture (days 3–6): if the rulebook has more sub
 | 7   | 1 Editor        | Hex grid maths: coordinates, neighbours, distance, lines      | Unit tests pass                                   |
 | 8   | 1 Editor        | SVG hex map rendering, pan, zoom                              | Empty grid of the board's size on screen          |
 | 9   | 1 Editor        | Terrain palette, painting, save/load `map.json`               | Terrain painted and reloaded                      |
-| 10  | 1 Editor        | Hexside features: rivers, coastline, fortified lines          | Features drawn and saved                          |
+| 10  | 1 Editor        | Hexside features: rivers and the Rhine–IJssel line            | Features drawn and saved                          |
 | 11  | 1 Editor        | Special-hex tags, board-photo overlay, map validation         | Karl can start entering the board                 |
 | 12  | 1 Editor        | Karl enters the map; Claude fixes editor issues he finds      | Complete `map.json` checked against the board     |
 | 13  | 1 Editor        | Unit editor and NATO counter rendering                        | Counter sheet entered as `units.json`             |

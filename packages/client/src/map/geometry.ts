@@ -1,4 +1,11 @@
-import { roundHex, type Hex } from '@dday/engine';
+import {
+  DIRECTIONS,
+  formatHexside,
+  hexsideOf,
+  roundHex,
+  type Hex,
+  type Hexside,
+} from '@dday/engine';
 
 /** Centre-to-corner size of a hex, in map units. */
 export const HEX_SIZE = 20;
@@ -30,11 +37,84 @@ export function hexCentre({ l, n }: Hex): Point {
   };
 }
 
-/** The hex under a point on the screen, measured from the map's top-left corner. */
-export function hexAtScreenPoint(view: View, { x, y }: Point): Hex {
-  const n = (x - view.x) / view.scale / (1.5 * HEX_SIZE);
-  const l = -(y - view.y) / view.scale / (Math.sqrt(3) * HEX_SIZE) - n / 2;
+/** Converts a point on the screen, measured from the map's top-left corner, to map units. */
+export function screenToMap(view: View, { x, y }: Point): Point {
+  return { x: (x - view.x) / view.scale, y: (y - view.y) / view.scale };
+}
+
+/** The hex containing a point in map units. */
+export function hexAtPoint({ x, y }: Point): Hex {
+  const n = x / (1.5 * HEX_SIZE);
+  const l = -y / (Math.sqrt(3) * HEX_SIZE) - n / 2;
   return roundHex(l, n);
+}
+
+/** A hexside's midpoint, and unit vectors along it and across it (towards `to`). */
+function hexsideFrame({ from, to }: Hexside): { middle: Point; along: Point; across: Point } {
+  const a = hexCentre(from);
+  const b = hexCentre(to);
+  const length = Math.hypot(b.x - a.x, b.y - a.y);
+  const across = { x: (b.x - a.x) / length, y: (b.y - a.y) / length };
+  return {
+    middle: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 },
+    along: { x: -across.y, y: across.x },
+    across,
+  };
+}
+
+// A point is on a hexside if it's this close to the edge, measured across it...
+const HEXSIDE_REACH_ACROSS = HEX_SIZE * 0.3;
+// ...and no nearer a corner than this. All three edges meeting at a corner are equally close
+// to it, so near a corner there's no telling which one is meant.
+const HEXSIDE_REACH_ALONG = HEX_SIZE * 0.4;
+
+/** The hexside a point is on, or null if it's in the middle of a hex or near a corner. */
+export function hexsideAtPoint(point: Point): Hexside | null {
+  const hex = hexAtPoint(point);
+  let nearest: Hexside | null = null;
+  let nearestDistance = HEXSIDE_REACH_ACROSS;
+  for (const direction of DIRECTIONS) {
+    const side = hexsideOf(hex, direction);
+    const { middle, along, across } = hexsideFrame(side);
+    const dx = point.x - middle.x;
+    const dy = point.y - middle.y;
+    const distanceAlong = Math.abs(dx * along.x + dy * along.y);
+    const distanceAcross = Math.abs(dx * across.x + dy * across.y);
+    if (distanceAlong <= HEXSIDE_REACH_ALONG && distanceAcross <= nearestDistance) {
+      nearest = side;
+      nearestDistance = distanceAcross;
+    }
+  }
+  return nearest;
+}
+
+const HEXSIDE_SAMPLE_STEP = HEX_SIZE / 8;
+
+/** The hexsides a pointer passes over moving in a straight line, in order, without repeats. */
+export function hexsidesAlong(from: Point, to: Point): Hexside[] {
+  const steps = Math.max(
+    1,
+    Math.ceil(Math.hypot(to.x - from.x, to.y - from.y) / HEXSIDE_SAMPLE_STEP),
+  );
+  const found = new Map<string, Hexside>();
+  for (let step = 0; step <= steps; step++) {
+    const t = step / steps;
+    const side = hexsideAtPoint({
+      x: from.x + (to.x - from.x) * t,
+      y: from.y + (to.y - from.y) * t,
+    });
+    if (side) found.set(formatHexside(side), side);
+  }
+  return [...found.values()];
+}
+
+/** The line along a hexside, between its two corners. */
+export function hexsidePath(side: Hexside): string {
+  // The edge is one hex size long, centred on its midpoint.
+  const { middle, along } = hexsideFrame(side);
+  const dx = along.x * (HEX_SIZE / 2);
+  const dy = along.y * (HEX_SIZE / 2);
+  return `M${middle.x - dx} ${middle.y - dy}L${middle.x + dx} ${middle.y + dy}`;
 }
 
 export function hexOutline(hex: Hex): string {

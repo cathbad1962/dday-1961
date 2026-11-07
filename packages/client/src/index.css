@@ -78,8 +78,26 @@ body {
   stroke-opacity: 0.25;
 }
 
-.terrain-erase {
+.terrain-erase,
+.hexside-erase-hexside {
   background: linear-gradient(135deg, #fff 45%, #c9413a 45% 55%, #fff 55%);
+}
+
+.hex-map-hexside {
+  fill: none;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.hexside-river {
+  stroke: #2f6db5;
+  stroke-width: 3px;
+}
+
+.hexside-rhine-ijssel {
+  stroke: #173f8a;
+  stroke-width: 5px;
 }
 
 .palette {
@@ -166,6 +184,27 @@ body {
 
 .swatch.terrain-none {
   background-color: transparent;
+}
+
+.swatch.hexside-river {
+  background: linear-gradient(transparent 40%, #2f6db5 40% 60%, transparent 60%);
+}
+
+.swatch.hexside-rhine-ijssel {
+  background: linear-gradient(transparent 30%, #173f8a 30% 70%, transparent 70%);
+}
+
+.palette h2 {
+  margin: 6px 2px 2px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.palette h2:first-child {
+  margin-top: 0;
 }
 
 .palette-hint {
