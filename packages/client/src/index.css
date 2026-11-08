@@ -26,15 +26,21 @@ body {
   vector-effect: non-scaling-stroke;
 }
 
+/* Label colours follow the hex underneath, so labels need no outline to stand out. */
 .hex-map-labels text {
-  fill: #2b2a26;
-  stroke: rgb(255 255 255 / 70%);
-  stroke-width: 2px;
-  paint-order: stroke;
+  fill: light-dark(#6b675c, #9a9ea6);
   font-size: 7px;
   text-anchor: middle;
   dominant-baseline: central;
   pointer-events: none;
+}
+
+.hex-map-labels .on-light {
+  fill: #4a463d;
+}
+
+.hex-map-labels .on-dark {
+  fill: #f5efe0;
 }
 
 .terrain-unpainted {

@@ -23,6 +23,19 @@ import {
 const LABEL_MIN_SCALE = 1;
 const ZOOM_PER_WHEEL_PIXEL = 0.002;
 
+/** Label colour for each terrain fill. Unpainted and unprinted hexes keep the faint default. */
+const LABEL_TONES: Record<TerrainType, 'on-light' | 'on-dark' | undefined> = {
+  clear: 'on-light',
+  sea: 'on-light',
+  city: 'on-light',
+  fortified: 'on-light',
+  neutral: 'on-light',
+  fortress: 'on-dark',
+  mountain: 'on-dark',
+  impassable: 'on-dark',
+  none: undefined,
+};
+
 interface HexMapProps {
   hexes: readonly Hex[];
   terrain: TerrainMap;
@@ -69,13 +82,14 @@ export function HexMap({ hexes, terrain, hexsides, onPaint }: HexMapProps) {
       hexes.map((hex) => {
         const { x, y } = hexCentre(hex);
         const label = formatHex(hex);
+        const type = terrain[label];
         return (
-          <text key={label} x={x} y={y}>
+          <text key={label} x={x} y={y} className={type && LABEL_TONES[type]}>
             {label}
           </text>
         );
       }),
-    [hexes],
+    [hexes, terrain],
   );
 
   useEffect(() => {
