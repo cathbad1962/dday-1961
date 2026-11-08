@@ -84,9 +84,9 @@ The editor is built first, and Karl uses it to enter the whole board, counter mi
 - Set the grid size (columns × rows) and hex orientation to match the board; show the board's own row/column numbering if it has one.
 - Paint terrain onto hexes from a palette (clear, forest, rough, city, coast, sea and so on, as defined by the rulebook's terrain key).
 - Draw hexside features: rivers, and which river edges form the Rhine–IJssel line. The 1961 rules have no other edge features: the coast follows from sea hexes, and fortified zones are hexes.
-- Tag special hexes: invasion areas, ports, reinforcement entry hexes, victory hexes, map-edge exits.
-- Optional background: load a photo of the board under the grid at adjustable opacity, for tracing.
-- Validate: flag unpainted hexes and features that do not touch a hex edge.
+- Mark the board's special printing as it appears: the seven invasion areas, red numbers (boxed or not) with their arrows, inland ports and their letter hexes, and starred hexes. The editor records what is printed; the rules engine decides what each marking means. Reinforcement entry hexes are the beaches and ports; the 1961 board has no victory hexes or map-edge exits.
+- Background: show a board photo from `docs/rules/photos` (kept out of the repo) over the grid at adjustable opacity, pinned to the grid by two hexes, for tracing.
+- Validate: flag unpainted hexes, invasion areas not yet entered, and markings the board couldn't show, such as a star at sea or a red number on land.
 
 **Unit editor**
 

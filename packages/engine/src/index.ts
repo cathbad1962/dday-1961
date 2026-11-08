@@ -7,6 +7,7 @@ export * from './board';
 export * from './hex';
 export * from './hexside';
 export * from './map';
+export * from './validateMap';
 
 export const GAME_TITLE = 'D-Day';
 export const RULES_EDITION = 1961;

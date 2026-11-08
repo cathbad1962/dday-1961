@@ -7,7 +7,7 @@ import {
   type TerrainMap,
   type TerrainType,
 } from '@dday/engine';
-import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type PointerEvent, type ReactNode } from 'react';
 import {
   fitView,
   hexCentre,
@@ -19,6 +19,7 @@ import {
   type Point,
   type View,
 } from './geometry';
+import { ArrowheadMarker } from './MapMarkings';
 
 const LABEL_MIN_SCALE = 1;
 const ZOOM_PER_WHEEL_PIXEL = 0.002;
@@ -46,14 +47,44 @@ interface HexMapProps {
    * and its new one, in map units.
    */
   onPaint?: (from: Point | null, to: Point) => void;
+  /** Called when a paint drag ends, with the pointer's last position. */
+  onPaintEnd?: (at: Point) => void;
+  /** Drawn over the terrain and under everything else, such as a board photo. */
+  underlay?: ReactNode;
+  /** Drawn over the hexsides and under the labels, such as the board's markings. */
+  overlay?: ReactNode;
+  /** When this changes, the view moves to centre the hex, zooming in if needed. */
+  focus?: Hex | null;
 }
 
 type Drag = { kind: 'pan'; last: Point } | { kind: 'paint'; last: Point };
 
-export function HexMap({ hexes, terrain, hexsides, onPaint }: HexMapProps) {
+const FOCUS_MIN_SCALE = 2;
+
+export function HexMap({
+  hexes,
+  terrain,
+  hexsides,
+  onPaint,
+  onPaintEnd,
+  underlay,
+  overlay,
+  focus,
+}: HexMapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const dragRef = useRef<Drag | null>(null);
   const [view, setView] = useState<View | null>(null);
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!focus || !svg) return;
+    const { width, height } = svg.getBoundingClientRect();
+    const { x, y } = hexCentre(focus);
+    setView((current) => {
+      const scale = Math.max(current?.scale ?? 0, FOCUS_MIN_SCALE);
+      return { scale, x: width / 2 - x * scale, y: height / 2 - y * scale };
+    });
+  }, [focus]);
 
   const outlines = useMemo(() => {
     const byTerrain = new Map<TerrainType | 'unpainted', string[]>();
@@ -142,7 +173,13 @@ export function HexMap({ hexes, terrain, hexsides, onPaint }: HexMapProps) {
     }
   };
 
-  const endDrag = () => {
+  const endDrag = (event: PointerEvent<SVGSVGElement>) => {
+    const current = dragRef.current;
+    dragRef.current = null;
+    if (current?.kind === 'paint' && view) onPaintEnd?.(pointerOnMap(event, view));
+  };
+
+  const cancelDrag = () => {
     dragRef.current = null;
   };
 
@@ -153,17 +190,22 @@ export function HexMap({ hexes, terrain, hexsides, onPaint }: HexMapProps) {
       onPointerDown={startDrag}
       onPointerMove={drag}
       onPointerUp={endDrag}
-      onPointerCancel={endDrag}
+      onPointerCancel={cancelDrag}
       onContextMenu={(event) => event.preventDefault()}
     >
+      <defs>
+        <ArrowheadMarker />
+      </defs>
       {view && (
         <g transform={`translate(${view.x} ${view.y}) scale(${view.scale})`}>
           {outlines.map(({ type, path }) => (
             <path key={type} className={`hex-map-grid terrain-${type}`} d={path} />
           ))}
+          {underlay}
           {hexsideLines.map(({ feature, path }) => (
             <path key={feature} className={`hex-map-hexside hexside-${feature}`} d={path} />
           ))}
+          {overlay}
           {view.scale >= LABEL_MIN_SCALE && <g className="hex-map-labels">{labels}</g>}
         </g>
       )}

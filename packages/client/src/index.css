@@ -113,7 +113,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  width: 160px;
+  box-sizing: border-box;
+  width: 210px;
+  max-height: calc(100vh - 24px);
   padding: 8px;
   border-radius: 8px;
   background: light-dark(#fff, #1b1d21);
@@ -223,4 +225,238 @@ body {
   margin: 4px 2px;
   color: #c9413a;
   font-size: 13px;
+}
+
+/* Board markings, drawn in map units so they scale with the hexes like the printed board. */
+.board-photo {
+  pointer-events: none;
+}
+
+.area-border {
+  fill: none;
+  stroke: #d0342c;
+  stroke-width: 2px;
+  stroke-dasharray: 6 4;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.area-name {
+  fill: #d0342c;
+  font-size: 9px;
+  font-style: italic;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.hex-star {
+  fill: #d0342c;
+  font-size: 9px;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.port-letters {
+  fill: #2f6db5;
+  font-size: 6px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.supply-arrow {
+  fill: none;
+  stroke: #d0342c;
+  stroke-width: 1.2;
+  pointer-events: none;
+}
+
+.supply-arrow.pending {
+  stroke-dasharray: 3 2;
+}
+
+.arrowhead {
+  fill: #d0342c;
+}
+
+.supply-box {
+  fill: #fff;
+  stroke: #d0342c;
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+.supply-number {
+  fill: #d0342c;
+  font-size: 8px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+
+.hex-highlight {
+  fill: rgb(255 214 10 / 25%);
+  stroke: #ffd60a;
+  stroke-width: 3px;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+/* Palette tabs and controls. */
+.palette-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.palette .palette-tabs button {
+  padding: 3px 6px;
+  font-size: 12px;
+}
+
+.palette-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  overflow: hidden auto;
+}
+
+.palette-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 0 4px 28px;
+  font-size: 13px;
+}
+
+.palette-options label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.palette-options input[type='number'] {
+  width: 4em;
+}
+
+.palette-options input[type='range'],
+.palette-options select {
+  min-width: 0;
+  flex: 1;
+}
+
+.palette-row {
+  display: flex;
+  gap: 4px;
+}
+
+.palette-row input,
+.palette-row select {
+  min-width: 0;
+  flex: 1;
+}
+
+.palette-row .letter-input {
+  width: 2em;
+  flex: none;
+  text-align: center;
+}
+
+.palette select,
+.palette input {
+  font: inherit;
+  font-size: 13px;
+}
+
+.palette-step {
+  margin: 0;
+  padding: 6px;
+  border-radius: 4px;
+  background: light-dark(#fff6cc, #3a3418);
+  font-size: 13px;
+}
+
+.palette .save {
+  margin-top: 6px;
+}
+
+.swatch.marking-star {
+  background: none;
+  border-color: transparent;
+}
+
+.swatch.marking-star::before {
+  content: '★';
+  color: #d0342c;
+}
+
+.swatch.marking-area {
+  background: none;
+  border: 2px dashed #d0342c;
+}
+
+.swatch.marking-supply {
+  background: #fff;
+  border-color: #d0342c;
+}
+
+.swatch.marking-port {
+  background: none;
+}
+
+.swatch.marking-port::before {
+  content: 'R';
+  color: #2f6db5;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.swatch.marking-erase {
+  background: linear-gradient(135deg, #fff 45%, #c9413a 45% 55%, #fff 55%);
+}
+
+.swatch.marking-star,
+.swatch.marking-port {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.issues {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.palette .issues button {
+  align-items: flex-start;
+  width: 100%;
+  font-size: 13px;
+}
+
+.issue-level {
+  flex: none;
+  width: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.issue-level.error {
+  color: #d0342c;
+}
+
+.issue-level.warning {
+  color: #c98a00;
 }
